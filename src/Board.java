@@ -1,6 +1,11 @@
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,6 +17,26 @@ import javax.swing.JPanel;
  * @author victor
  */
 public class Board extends JPanel {
+    
+    class MyKeyAdapter extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch(e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    moveLeft();
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    moveRight();
+                    break;
+                case KeyEvent.VK_UP:
+                    break;
+                case KeyEvent.VK_DOWN:
+                    moveDown();
+                    break;                
+            }
+            repaint();
+        }
+    }
     
     public static final Color COLORS[] = {
             new Color(0, 0, 0), 
@@ -28,6 +53,8 @@ public class Board extends JPanel {
     private Shape currentShape;
     private int currentRow;
     private int currentCol;
+    private Timer timer;
+    private int deltaTime;
     
     public Board() {
         super();
@@ -40,7 +67,31 @@ public class Board extends JPanel {
         currentShape = new Shape();
         currentRow = 2;
         currentCol = NUM_COLS / 2;
-    }        
+        
+        MyKeyAdapter keyAdepter = new MyKeyAdapter();
+        addKeyListener(keyAdepter);
+        setFocusable(true);
+        
+        deltaTime = 500;
+        timer = new Timer(deltaTime, new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+	
+                mainLoop();
+            }
+        });
+        timer.start();
+    }      
+    
+    public void mainLoop() {
+        moveDown();
+    }
+    
+    public void moveDown() {
+        if (currentRow + currentShape.maxY() < NUM_ROWS - 1) {
+            currentRow ++;  
+        }
+        repaint();
+    }
     
     @Override
     protected void paintComponent(Graphics g) {
@@ -59,7 +110,23 @@ public class Board extends JPanel {
     }
     
     private void paintBoard(Graphics2D g2d) {
-        
+        for (int row = 0; row<NUM_ROWS; row ++) {
+            for (int col = 0; col<NUM_COLS; col ++) {
+                drawSquare(g2d, row, col, board[row][col]);
+            }
+        }
+    }
+    
+    public void moveLeft() {
+        if (currentCol + currentShape.minX() > 0) {
+            currentCol --;
+        }
+    }
+    
+    public void moveRight() {
+        if (currentCol + currentShape.maxX() < NUM_COLS - 1) {
+            currentCol ++;
+        }
     }
     
     private int squareWidth() {
