@@ -23,10 +23,14 @@ public class Board extends JPanel {
         public void keyPressed(KeyEvent e) {
             switch(e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    moveLeft();
+                    if (canMove(currentCol - 1)) {
+                        moveLeft();
+                    }                   
                     break;
                 case KeyEvent.VK_RIGHT:
-                    moveRight();
+                    if (canMove(currentCol + 1)) {
+                        moveRight();
+                    } 
                     break;
                 case KeyEvent.VK_UP:
                     break;
@@ -55,6 +59,8 @@ public class Board extends JPanel {
     private int currentCol;
     private Timer timer;
     private int deltaTime;
+    private static final int INITIAL_ROW = -2;
+    private MyKeyAdapter keyAdepter;
     
     public Board() {
         super();
@@ -65,10 +71,10 @@ public class Board extends JPanel {
             }
         }
         currentShape = new Shape();
-        currentRow = 2;
+        currentRow = INITIAL_ROW;
         currentCol = NUM_COLS / 2;
         
-        MyKeyAdapter keyAdepter = new MyKeyAdapter();
+        keyAdepter = new MyKeyAdapter();
         addKeyListener(keyAdepter);
         setFocusable(true);
         
@@ -86,11 +92,77 @@ public class Board extends JPanel {
         moveDown();
     }
     
-    public void moveDown() {
-        if (currentRow + currentShape.maxY() < NUM_ROWS - 1) {
-            currentRow ++;  
+    private void moveDown() {
+        if (!collisions(currentRow + 1)) {
+            currentRow ++;
+        } else {
+            makeCollision();
         }
         repaint();
+    }
+    
+    private boolean canMove(int newCol) {
+        if (newCol + currentShape.minX() < 0) {
+            return false;
+        }
+        if (newCol + currentShape.maxX() > NUM_COLS -1) {
+            return false;            
+        }
+        for (int i=0; i<=3; i++) {
+            int row = currentRow + currentShape.getY(i);
+            int col = newCol + currentShape.getX(i);
+            if (row>=0) {
+                if (board[row][col] != Tetrominoes.NoShape) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+        
+    private boolean collisions(int newRow) {
+        if (newRow + currentShape.maxY() >= NUM_ROWS ) {
+            return true;
+        } else {
+            for (int i=0; i<=3; i++) {
+                int row = newRow + currentShape.getY(i);
+                int col = currentCol + currentShape.getX(i);
+                if (row>=0) {
+                    if (board[row][col] != Tetrominoes.NoShape) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private void makeCollision() {
+        if (!movePieceToBoard()) {
+            makeGameOver();
+        } else {
+            currentShape = new Shape();
+            currentRow = INITIAL_ROW;
+            currentCol = NUM_COLS / 2;
+        }
+    }
+    
+    public void makeGameOver() {
+        timer.stop();
+        removeKeyListener(keyAdepter);
+    }
+    
+    private boolean movePieceToBoard() {
+        for (int i=0; i<=3; i++) {
+            int row = currentRow + currentShape.getY(i);
+            int col = currentCol + currentShape.getX(i);    
+            if (row<0) { // Game over
+                return false;
+            } else {
+                board[row][col] = currentShape.getShape();
+            }
+        }
+        return true;
     }
     
     @Override
@@ -118,15 +190,11 @@ public class Board extends JPanel {
     }
     
     public void moveLeft() {
-        if (currentCol + currentShape.minX() > 0) {
-            currentCol --;
-        }
+        currentCol --;
     }
     
     public void moveRight() {
-        if (currentCol + currentShape.maxX() < NUM_COLS - 1) {
-            currentCol ++;
-        }
+        currentCol ++;
     }
     
     private int squareWidth() {
