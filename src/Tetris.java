@@ -15,6 +15,8 @@ public class Tetris extends javax.swing.JFrame {
      */
     public Tetris() {
         initComponents();
+        board2.setScoreBoard(scoreBoard);
+        jDialog1.setVisible(true);
     }
 
     /**
@@ -26,27 +28,66 @@ public class Tetris extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        board = new Board();
+        scoreBoard1 = new ScoreBoard();
+        jDialog1 = new javax.swing.JDialog();
+        jLabel1 = new javax.swing.JLabel();
+        scoreBoard = new ScoreBoard();
+        board2 = new Board();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemNewGame = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
+        javax.swing.GroupLayout scoreBoard1Layout = new javax.swing.GroupLayout(scoreBoard1);
+        scoreBoard1.setLayout(scoreBoard1Layout);
+        scoreBoard1Layout.setHorizontalGroup(
+            scoreBoard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        scoreBoard1Layout.setVerticalGroup(
+            scoreBoard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jDialog1.setModal(true);
+        jDialog1.setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+        jDialog1.setSize(new java.awt.Dimension(100, 200));
+
+        jLabel1.setText("jLabel1");
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog1Layout.createSequentialGroup()
+                .addContainerGap(166, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(87, 87, 87))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addGap(93, 93, 93)
+                .addComponent(jLabel1)
+                .addContainerGap(128, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().add(scoreBoard, java.awt.BorderLayout.PAGE_END);
 
-        javax.swing.GroupLayout boardLayout = new javax.swing.GroupLayout(board);
-        board.setLayout(boardLayout);
-        boardLayout.setHorizontalGroup(
-            boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 178, Short.MAX_VALUE)
+        javax.swing.GroupLayout board2Layout = new javax.swing.GroupLayout(board2);
+        board2.setLayout(board2Layout);
+        board2Layout.setHorizontalGroup(
+            board2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 180, Short.MAX_VALUE)
         );
-        boardLayout.setVerticalGroup(
-            boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
+        board2Layout.setVerticalGroup(
+            board2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 413, Short.MAX_VALUE)
         );
 
-        getContentPane().add(board, java.awt.BorderLayout.CENTER);
+        getContentPane().add(board2, java.awt.BorderLayout.CENTER);
 
         jMenu1.setText("File");
 
@@ -102,11 +143,15 @@ public class Tetris extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Board board;
+    private Board board2;
+    private javax.swing.JDialog jDialog1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemNewGame;
+    private ScoreBoard scoreBoard;
+    private ScoreBoard scoreBoard1;
     // End of variables declaration//GEN-END:variables
 }
