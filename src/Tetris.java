@@ -15,7 +15,9 @@ public class Tetris extends javax.swing.JFrame {
      */
     public Tetris() {
         initComponents();
+        setLocationRelativeTo(null);
         board2.setScoreBoard(scoreBoard);
+        jDialog1.setLocationRelativeTo(null);
         jDialog1.setVisible(true);
     }
 
