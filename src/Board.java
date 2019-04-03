@@ -18,21 +18,23 @@ import javax.swing.Timer;
  */
 public class Board extends JPanel {
     
+    
     class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
             switch(e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    if (canMove(currentCol - 1)) {
+                    if (canMove(currentShape, currentCol - 1)) {
                         moveLeft();
                     }                   
                     break;
                 case KeyEvent.VK_RIGHT:
-                    if (canMove(currentCol + 1)) {
+                    if (canMove(currentShape, currentCol + 1)) {
                         moveRight();
                     } 
                     break;
                 case KeyEvent.VK_UP:
+                    rotateCurrentShape();
                     break;
                 case KeyEvent.VK_DOWN:
                     moveDown();
@@ -40,6 +42,7 @@ public class Board extends JPanel {
             }
             repaint();
         }
+        
     }
     
     public static final Color COLORS[] = {
@@ -61,6 +64,11 @@ public class Board extends JPanel {
     private int deltaTime;
     private static final int INITIAL_ROW = -2;
     private MyKeyAdapter keyAdepter;
+    private ScoreBoard scoreBoard;
+    
+    public void setScoreBoard(ScoreBoard scoreBoard) {
+        this.scoreBoard = scoreBoard;
+    }
     
     public Board() {
         super();
@@ -97,20 +105,49 @@ public class Board extends JPanel {
             currentRow ++;
         } else {
             makeCollision();
+            detectFullLine();
         }
         repaint();
     }
     
-    private boolean canMove(int newCol) {
-        if (newCol + currentShape.minX() < 0) {
+    private void detectFullLine() {
+        int counter;
+        for (int row = 0; row < NUM_ROWS; row ++) {
+            counter = 0;
+            for (int col = 0; col < NUM_COLS; col ++) {
+                if (board[row][col] != Tetrominoes.NoShape) {
+                    counter ++;
+                }
+            }
+            if (counter == NUM_COLS) {
+                //System.out.println("Full line " + row);
+                deleteLine(row);
+                scoreBoard.incrementScore();
+            }
+        }
+    }
+    
+    private void deleteLine(int rowToDelete) {
+        for (int row = rowToDelete; row>1; row --) {
+            for (int col = 0; col < NUM_COLS; col ++) {
+                board[row][col] = board[row-1][col];
+            }
+        }
+        for (int col = 0; col< NUM_COLS; col++) {
+            board[0][col] = Tetrominoes.NoShape;
+        }
+    }
+    
+    private boolean canMove(Shape shape, int newCol) {
+        if (newCol + shape.minX() < 0) {
             return false;
         }
-        if (newCol + currentShape.maxX() > NUM_COLS -1) {
+        if (newCol + shape.maxX() > NUM_COLS -1) {
             return false;            
         }
         for (int i=0; i<=3; i++) {
-            int row = currentRow + currentShape.getY(i);
-            int col = newCol + currentShape.getX(i);
+            int row = currentRow + shape.getY(i);
+            int col = newCol + shape.getX(i);
             if (row>=0) {
                 if (board[row][col] != Tetrominoes.NoShape) {
                     return false;
@@ -135,6 +172,13 @@ public class Board extends JPanel {
             }
         }
         return false;
+    }
+    
+    private void rotateCurrentShape() {
+        Shape rotatedShape = currentShape.rotateRight();
+        if (canMove(rotatedShape, currentCol)) {
+            currentShape = rotatedShape;
+        }
     }
     
     private void makeCollision() {

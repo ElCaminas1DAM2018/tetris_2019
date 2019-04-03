@@ -27,7 +27,12 @@ public class Shape {
     
     public Shape(Tetrominoes t) {
         pieceShape = t;
-        coords = coordsTable[pieceShape.ordinal()]; 
+        coords = new int[4][2];
+        for (int i=0; i<=3; i++) {
+            for (int xy = 0; xy <=1; xy ++) {
+                coords[i][xy] = coordsTable[pieceShape.ordinal()][i][xy];
+            }
+        }
     }
     
     public Shape() {
@@ -35,7 +40,12 @@ public class Shape {
         int r = random.nextInt(7) + 1;
         //(int)(Math.random()*7) + 1;
         pieceShape = Tetrominoes.values()[r];
-        coords = coordsTable[pieceShape.ordinal()];
+        coords = new int[4][2];
+        for (int i=0; i<=3; i++) {
+            for (int xy = 0; xy <=1; xy ++) {
+                coords[i][xy] = coordsTable[pieceShape.ordinal()][i][xy];
+            }
+        }
     }
     
     public void setX(int point, int x) {
@@ -66,6 +76,19 @@ public class Shape {
         }
         return minX;
     }
+    public Shape rotateRight() {
+        Shape rotatedShape = new Shape(pieceShape);
+        if (pieceShape == Tetrominoes.SquareShape) {
+            return rotatedShape;
+        }
+        for (int i=0; i<=3; i++) {
+            int x = getX(i);
+            int y = getY(i);
+            rotatedShape.setX(i, y);
+            rotatedShape.setY(i, -x);
+        }
+        return rotatedShape;
+    }
     public int minY() {
         int minY = getY(0);
         for (int i = 1; i < coords.length; i++) {
@@ -88,7 +111,7 @@ public class Shape {
         int maxY = getY(0);
         for (int i = 1; i < coords.length; i++) {
             if (getY(i) > maxY) {
-                maxY = getX(i);
+                maxY = getY(i);
             } 
         }
         return maxY;
